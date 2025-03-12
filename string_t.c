@@ -1,10 +1,10 @@
 /**
- * ISA Project - Monitoring DNS communication
+ * ISA Project - Monitoring of DNS communication
  * @brief Dynamic string
  * @file string_t.c
  *
  * @author Vaclav Pribyl <xpriby22@stud.fit.vutbr.cz>
- * @date 26-09-2024
+ * @date 16-11-2024
  * @note repurposed from IFJ Project - IFJ23 language compiler
  */
 

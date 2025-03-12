@@ -1,3 +1,12 @@
+/**
+ * ISA Project - Monitoring of DNS communication
+ * @brief Overhead for file entry management
+ * @file file_records_mgmt.c
+ *
+ * @author Vaclav Pribyl <xpriby22@stud.fit.vutbr.cz>
+ * @date 16-11-2024
+ */
+
 #include "file_records_mgmt.h"
 
 FILE *domainsfile = NULL;
@@ -5,9 +14,8 @@ FILE *translationsfile = NULL;
 struct domain_name_ll ll = {NULL, NULL};
 
 
-struct domain_name *ll_add(char *dname, bool init) {
+struct domain_name *_ll_add(char *dname, bool init) {
     struct domain_name *dn = malloc(sizeof(struct domain_name));
-    // TODO handle failure
     struct domain_name *tmp;
     str_init(&dn->name);
     str_append_stream(&dn->name, dname);
@@ -30,7 +38,7 @@ struct domain_name *ll_add(char *dname, bool init) {
 }
 
 
-struct domain_name *locate_dname_entry(char *dname) {
+struct domain_name *_locate_dname_entry(char *dname) {
     struct domain_name *dn = ll.fst;
     while (dn) {
         if (str_cmp(&dn->name, dname)) {
@@ -42,7 +50,7 @@ struct domain_name *locate_dname_entry(char *dname) {
 }
 
 
-void add_taddr(char *taddr, struct domain_name *dname, bool init) {
+void _add_taddr(char *taddr, struct domain_name *dname, bool init) {
     struct translation_name *ptr = dname->translation;
     struct translation_name *prev;
     while (ptr) {
@@ -53,7 +61,6 @@ void add_taddr(char *taddr, struct domain_name *dname, bool init) {
         ptr = ptr->next;
     }
     ptr = malloc(sizeof(struct translation_name));
-    // TODO handle failure
     ptr->next = NULL;
     str_init(&ptr->name);
     str_append_stream(&ptr->name, taddr);
@@ -71,24 +78,24 @@ void add_taddr(char *taddr, struct domain_name *dname, bool init) {
 
 
 void add_dname_entry(char *dname, bool init) {
-    struct domain_name *dn = locate_dname_entry(dname);
+    struct domain_name *dn = _locate_dname_entry(dname);
     if (dn) {
         return;
     }
-    ll_add(dname, init);
+    _ll_add(dname, init);
 }
 
 
 void add_taddr_entry_to_dname(char *taddr, char *dname, bool init) {
-    struct domain_name *dn = locate_dname_entry(dname);
+    struct domain_name *dn = _locate_dname_entry(dname);
     if (!dn) {
-        dn = ll_add(dname, init);
+        dn = _ll_add(dname, init);
     }
-    add_taddr(taddr, dn, init);
+    _add_taddr(taddr, dn, init);
 }
 
 
-bool parse_tfile() {
+void _parse_tfile() {
     char dname[NS_MAXDNAME + 1];
     char taddr[INET6_ADDRSTRLEN + 2];
 
@@ -104,12 +111,10 @@ bool parse_tfile() {
         add_taddr_entry_to_dname(taddr, dname, true);
 
     } while(true);
-
-    return true;
 }
 
 
-bool parse_dfile() {
+void _parse_dfile() {
     char dname[NS_MAXDNAME + 2];
 
     do {
@@ -124,7 +129,6 @@ bool parse_dfile() {
         add_dname_entry(dname, true);
 
     } while (true);
-    return true;
 }
 
 bool set_files(string_t *dfile, string_t *tfile) {
@@ -132,31 +136,29 @@ bool set_files(string_t *dfile, string_t *tfile) {
         domainsfile = fopen(dfile->body, "a+");
         if (domainsfile) {
             rewind(domainsfile);
-            parse_dfile();
+            _parse_dfile();
         }
         else {
             return false;
         }
-        // TODO handle failure
     }
     if (tfile->len) {
         translationsfile = fopen(tfile->body, "a+");
         if (translationsfile) {
             rewind(translationsfile);
-            parse_tfile();
+            _parse_tfile();
         }
         else {
             if (domainsfile) {
                 return false;
             }
         }
-        // TODO handle failure
     }
     return true;
 }
 
 
-void entries_dtor() {
+void _entries_dtor() {
     struct domain_name *dn_ptr = ll.fst;
     struct domain_name *dn_tmp;
     struct translation_name *tn_ptr;
@@ -178,7 +180,7 @@ void entries_dtor() {
 
 
 void files_teardown() {
-    entries_dtor();
+    _entries_dtor();
 
     if (translationsfile) {
         fclose(translationsfile);

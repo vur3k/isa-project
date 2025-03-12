@@ -1,10 +1,10 @@
 /**
- * ISA Project - Monitoring DNS communication
+ * ISA Project - Monitoring of DNS communication
  * @brief Argument parser
  * @file arg_parser.c
- * 
+ *
  * @author Vaclav Pribyl <xpriby22@stud.fit.vutbr.cz>
- * @date 25-09-2024
+ * @date 16-11-2024
  */
 
 #include "arg_parser.h"
@@ -13,7 +13,9 @@
  * @brief Macro to process arguments
  * @link https://cfengine.com/blog/2021/optional-arguments-with-getopt-long/
  * @author Lars Erik Wik
- * since getopt does not terminate on passing invalid args, i had to work my way around it 
+ * @copyright Copyright 2021 by Lars Erik Wik. All rights reserved. This macro is released under the GNU GPL
+ *
+ * since getopt does not terminate on passing invalid args, i had to work my way around it
  */
 #define ARGUMENT_IS_PRESENT \
     ((optarg == NULL && optind < argc && argv[optind][0] != '-') \
@@ -57,7 +59,7 @@ void parse_args(int argc, char **argv, struct args *args) {
             case 'p':
                 if (str_is_empty(&args->interface) && str_is_empty(&args->pcapfile) && ARGUMENT_IS_PRESENT) {
                     str_append_stream(&args->pcapfile, optarg);
-                } 
+                }
                 else {
                     err = true;
                 }
