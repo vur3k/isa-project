@@ -1,0 +1,58 @@
+Jméno: Václav Přibyl
+Login: xpriby22
+Datum vytvoření: 16-11-2024
+
+################################################################################
+
+Popis:
+Program dns-monitor slouží k sledování DNS komunikace na síťovém rozhraní daného
+zařízení, případně analýze 'pcap' souboru. Ze zachycených paketů pak vypisuje
+důležité informace na standardní výstup.
+
+Překlad:
+Program lze přeložit za použití přiloženého souboru 'Makefile', zavoláním 
+příkazu '$ make' v terminále, v rámci kořenového adresáře projektu.
+
+################################################################################
+
+Rozšíření:
+Soubory pro ukládání doménových jmen a překladů doménových jmen slouží i jako
+vstupní soubory, tedy při spuštění programu je přečten obsah těchto souborů
+(pokud jsou specifikovány při spuštění pomocí přepínače) a ten je uložen do 
+vnitřní struktury znalých dat.
+
+################################################################################
+
+Spuštění:
+Program lze spustit zavoláním daným následujícím předpisem:
+'$ ./dns-monitor (-i <interface> | -p <pcapfile>) [-v] [-d <dfile>] [-t <tfile>]'
+Kde jednotlivé přepínače znamenají:
+-i <interface> | program bude poslouchat na síťovém rozhraní <interface>
+-p <pcapfile>  | program zanalyzuje dns komunikaci z pcap souboru <pcapfile>
+-v             | na výstup budou vypisována data podrobněji, komplexní výpis
+-d <dfile>     | do souboru <dfile> budou zapisována doménová jména záznamů
+-t <tfile>     | do souboru <tfile> budou zapisovány překlady doménových jmen
+
+Je možné, že při pokusu o spuštění s přepínačem -i dojde k selhání z důvodu, že 
+programu chybí oprávnění pro přístup k datům ze síťové karty. Práva lze programu
+přidělit pomocí příkazu 'sudo' zavoláním
+
+'$ sudo ./dns-monitor -i <interface> [-v] [-d <dfile>] [-t <tfile>]'
+
+################################################################################
+
+Seznam souborů:
+src/			adresář se zdrojovými soubory projektu
+	arg_parser.*		knihovna pro zpracování argumentů při spuštění
+	dns-monitor.*		hlavní funkce programu, formátovaný tisk dat
+	file_records_mgmt.*	knihovna pro čtení a ukládání dat do souborů
+	string_t.*		knihovna pro práci s řetězcem
+tests/			adresář s testovacími daty
+	dns.pcap		testovací dns zachycený soubor nad IPv4
+	dnsipv6.pcap		testovací dns zachycený soubor nad IPv6
+LICENSE			soubor obsahující licenční podmínky použití programu
+Makefile		soubor obsahující pravidla pro překlad programu
+manual.pdf		dokumentace projektu
+README			soubor se stručným popisem programu
+
+################################################################################
